@@ -33,36 +33,33 @@ axios
 			//récupération des données du feed
 			axios
 				.get(lien.link)
-				.then((response) => {
+				.then(async () => {
 					// Success 🎉
-					async () => {
-						//On parse la data de mon feed
-						await parser.parseURL(lien.link, (error, feed) => {
-							if (error) {
-							}
-							if (feed && feed.items && feed.items.length > 0) {
-								let links = feed.items;
-								links.forEach((link) => {
-									if (diff_hours(new Date(), new Date(link.pubDate)) <= 1) {
-										//template du tweet
-										let tweet = link.title + ": " + link.link;
-										//console.log(tweet);
-										//envoi du tweet
-										twitterClient.tweets
-											.statusesUpdate({
-												status: tweet,
-											})
-											.then((response) => {
-												console.log("Tweeted!", response);
-											})
-											.catch((err) => {
-												console.error(err);
-											});
-									}
-								});
-							}
-						});
-					};
+					//On parse la data de mon feed
+					await parser.parseURL(lien.link, (error, feed) => {
+						if (feed && feed.items && feed.items.length > 0) {
+							let links = feed.items;
+							//console.log(links);
+							links.forEach((link) => {
+								if (diff_hours(new Date(), new Date(link.pubDate)) <= 1) {
+									//template du tweet
+									let tweet = link.title + ": " + link.link;
+									//console.log(tweet);
+									//envoi du tweet
+									twitterClient.tweets
+										.statusesUpdate({
+											status: tweet,
+										})
+										.then((response) => {
+											console.log("Tweeted!", response);
+										})
+										.catch((err) => {
+											console.error(err);
+										});
+								}
+							});
+						}
+					});
 				})
 				.catch((error) => {
 					// Error 😨
