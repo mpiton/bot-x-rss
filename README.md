@@ -1,6 +1,7 @@
 # Bot Twitter RSS
 
-Bot Twitter qui envoie mon flux RSS toutes les heures.
+Bot Twitter qui envoie mon flux RSS toutes les 30 minutes.
+Mon flux RSS se trouve dans une base MongoDB.
 
 ## Installation
 
@@ -13,12 +14,17 @@ npm install
 Enlever le .example du fichier .env.example puis remplir les champs du fichier
 (Les clés API peuvent être récupérées sur le site de [Twitter](https://developer.twitter.com)).
 
-Le fichier db.json est la liste de vos feeds RSS, il est à éditer à votre convenance.
-
 ## Usage
 
 ```bash
-npm start # lance le bot
+npm run dev # lance le bot en version dev
+```
+
+## Mise en production
+
+```bash
+npm run build # crée la version de production dans /dist
+npm start # lance le bot en version de production
 ```
 
 ## Contribution
