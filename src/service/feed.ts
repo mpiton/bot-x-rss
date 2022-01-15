@@ -3,13 +3,19 @@ import { FeedDocument } from "@/types/feed/IFeed";
 import { NOT_ACCEPTABLE } from "http-status";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
+import Logger from "@/utils/logger";
 
 /**
  * Get All Feeds
- * @returns {Promise<FeedDocument[]>}
  */
-export const findFeeds = async (): Promise<FeedDocument[]> => {
-	return Promise.resolve(Feed.find());
+export const findFeeds = async () => {
+	try {
+		let feeds = await Feed.find();
+		Logger.info(`Nombre de feeds: ${feeds.length}`);
+		return feeds;
+	} catch (error) {
+		Logger.error(error.message);
+	}
 };
 
 /**
@@ -27,6 +33,7 @@ export const createFeed = async (
 		const feed = new Feed({
 			_id: new mongoose.Types.ObjectId(),
 			link: req.body.link,
+			title: req.body.title
 		});
 		await feed.save();
 		return feed;

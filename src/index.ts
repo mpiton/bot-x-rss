@@ -17,13 +17,11 @@ if (process.env.NODE_ENV !== "test") {
 	connect();
 }
 
-cron.schedule("*/30 * * * *", function () {
-	axios
-		.post("http://localhost:8080/tweet/create")
-		.then(() => Logger.info("Tweet inscrit en DB"))
-		.catch(() => Logger.info("Pas de nouveau tweet trouvé"))
-	axios
-		.post("http://localhost:8080/tweet")
-		.then(() => Logger.info("C'est twitté !"))
-		.catch((err) => Logger.error(err.message));
+cron.schedule("*/30 * * * *", async () => {
+	try {
+		await axios.post("http://localhost:8080/tweet/create");
+		await axios.post("http://localhost:8080/tweet");
+	} catch (error) {
+		Logger.error(error.message);
+	}
 });

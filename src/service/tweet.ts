@@ -1,38 +1,39 @@
-import { NOT_ACCEPTABLE } from "http-status";
-import mongoose from "mongoose";
 import { Response, Request } from "express";
 import Tweet from "@/models/Tweet";
 import { TweetDocument } from "@/types/tweet/ITweet";
 import { env } from "process";
 import { TwitterApi } from "twitter-api-v2";
+import mongoose from "mongoose";
 
 /**
  * Creation of the tweet
- * @param {{link: string, pubDate: string, sended: boolean}} data
+ * @param {TweetDocument} data
  * @param {Response} res
  * @returns {Promise<TweetDocument | undefined>}
  */
 export const createTweet = async (
-	data: { link: string; pubDate: string; sended: boolean },
+	req: Request,
 	res: Response
 ): Promise<TweetDocument | undefined> => {
 	try {
 		//Recherche si le tweet existe
-		const searchTweet = await Tweet.find({ link: data.link });
+		const searchTweet = await Tweet.find({ link: req.body.link });
+
 		//S'il n'existe pas alors je crée
-		if (searchTweet.find((elem) => elem.link === data.link) === undefined) {
+		if (searchTweet.find((elem) => elem.link === req.body.link) === undefined) {
 			//Register Tweet
 			const tweet = new Tweet({
 				_id: new mongoose.Types.ObjectId(),
-				link: data.link,
-				pubDate: data.pubDate,
-				sended: data.sended,
+				link: req.body.link,
+				pubDate: req.body.pubDate,
+				title: req.body.title,
+				sended: req.body.sended,
 			});
+
 			await tweet.save();
-			return tweet;
 		}
 	} catch (error) {
-		res.status(NOT_ACCEPTABLE).json({ success: false, error: error });
+		return;
 	}
 };
 
@@ -47,9 +48,9 @@ export const getAllTweetNotSended = async (
 	res: Response
 ): Promise<TweetDocument[] | undefined> => {
 	try {
-		return await Tweet.find({ sended: false }).exec();
+		return await Tweet.find({ sended: false });
 	} catch (error) {
-		res.status(NOT_ACCEPTABLE).json({ success: false, error: error });
+		return undefined;
 	}
 };
 
@@ -59,7 +60,7 @@ export const getAllTweetNotSended = async (
  * @param {Response} res
  * @returns
  */
-export const sendTweet = async (tweet: TweetDocument, res: Response) => {
+export const sendTweet = async (tweet: TweetDocument) => {
 	const appKey = env.TWITTER_API_KEY as string;
 	const appSecret = env.TWITTER_API_SECRET as string;
 	const clientToken = env.TWITTER_ACCESS_TOKEN as string;
@@ -72,7 +73,7 @@ export const sendTweet = async (tweet: TweetDocument, res: Response) => {
 	});
 
 	try {
-		await client.v1.tweet(tweet.link);
+		await client.v1.tweet(tweet.title + " : " + tweet.link);
 	} catch (error) {
 		console.log(error.message);
 	}
