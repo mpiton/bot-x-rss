@@ -29,7 +29,6 @@ export const createTweet = async (
 				title: req.body.title,
 				sended: req.body.sended,
 			});
-
 			await tweet.save();
 		}
 	} catch (error) {
