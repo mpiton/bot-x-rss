@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import { FeedDocument } from "@/types/feed/IFeed";
+import mongoose from "mongoose";
 
 const FeedSchema = new mongoose.Schema(
 	{

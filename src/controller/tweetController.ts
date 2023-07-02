@@ -1,9 +1,9 @@
-import * as tweetService from "@/service/tweet";
-import { NextFunction, Request, Response } from "express";
 import * as feedService from "@/service/feed";
-import { XMLParser } from "fast-xml-parser";
-import axios from "axios";
+import * as tweetService from "@/service/tweet";
 import Logger from "@/utils/logger";
+import axios from "axios";
+import { NextFunction, Request, Response } from "express";
+import { XMLParser } from "fast-xml-parser";
 
 //POST /tweet/create
 export const createTweetInDB = async (
@@ -21,13 +21,13 @@ export const createTweetInDB = async (
 
 				// Parse le XML
 				const parser = new XMLParser();
-				let jObj = parser.parse(response.data);
+				const jObj = parser.parse(response.data);
 				//Stockage des article dans un tableau
-				let articles = jObj.rss.channel.item;
-				let linkPublication: string = articles[0].link;
-				let titlePublication: string = articles[0].title;
-				let datePub: Date | string = new Date(articles[0].pubDate); //date du xml formatté en format date
-				let nowMoinsUn = new Date(
+				const articles = jObj.rss.channel.item;
+				const linkPublication: string = articles[0].link;
+				const titlePublication: string = articles[0].title;
+				const datePub: Date | string = new Date(articles[0].pubDate); //date du xml formatté en format date
+				const nowMoinsUn = new Date(
 					new Date().setHours(new Date().getHours() - 1)
 				); // Aujourd'hui - 1 heure
 				//Si la date de l'article est égale à aujourd'hui moins 1 heure
@@ -44,12 +44,13 @@ export const createTweetInDB = async (
 					await tweetService.createTweet(req, res);
 				}
 			} catch (error) {
-				return;
+				Logger.error(JSON.stringify(error));
+				return res.status(404).json({ message: "Rien à créer" });
 			}
 		});
 		return res.status(201).json({ message: "Tweets créés" });
 	} catch (error) {
-		Logger.error(error.message);
+		Logger.error(JSON.stringify(error));
 		return res.status(404).json({ message: "Rien à créer" });
 	}
 };
@@ -65,7 +66,7 @@ export const check = async (
 		const tweets = await tweetService.getAllTweetNotSended(req, res);
 		//pour chaque tweet
 		if (tweets !== undefined) {
-			Logger.info(tweets.length + " tweets à envoyer");
+			Logger.info(`${tweets.length} tweets à envoyer`);
 			tweets.forEach(async (tweet) => {
 				//envoi du tweet
 				await tweetService.sendTweet(tweet);
@@ -76,6 +77,7 @@ export const check = async (
 		Logger.info("Pas de nouveau tweet à envoyer");
 		return res.status(404).json({ message: "Rien à envoyer" });
 	} catch (error) {
-		Logger.error(error.message);
+		Logger.error(JSON.stringify(error));
+		return res.status(404).json({ message: "Rien à envoyer" });
 	}
 };

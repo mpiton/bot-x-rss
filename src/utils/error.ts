@@ -6,20 +6,18 @@ import HttpStatus from "http-status";
  * @param  {error} err
  * @return {array|object}
  */
-export const buildError = (err: any) => {
+export const buildError = (err: any): Array<any> | object => {
 	// Validation errors
 	if (err.isJoi || err instanceof SyntaxError) {
 		return {
 			code: HttpStatus.BAD_REQUEST,
 			message: HttpStatus[HttpStatus.BAD_REQUEST],
-			details:
-				err.details &&
-				err.details.map((error: any) => {
-					return {
-						message: error.message,
-						param: error.path,
-					};
-				}),
+			details: err.details?.map((error: any) => {
+				return {
+					message: JSON.stringify(error.message),
+					param: error.path,
+				};
+			}),
 		};
 	}
 

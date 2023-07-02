@@ -1,1 +1,0 @@
-supression des logs tous les mois

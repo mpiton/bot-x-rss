@@ -46,5 +46,18 @@ export const genericErrorHandler = (
 
 	const error = errors.buildError(err);
 
-	res.status(error.code).json({ error });
+	if (typeof error === "object" && error !== null && "code" in error) {
+		res
+			.status((error.code as number) || HttpStatus.INTERNAL_SERVER_ERROR)
+			.json({
+				error,
+			});
+	} else {
+		res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+			error: {
+				code: HttpStatus.INTERNAL_SERVER_ERROR,
+				message: HttpStatus[HttpStatus.INTERNAL_SERVER_ERROR],
+			},
+		});
+	}
 };

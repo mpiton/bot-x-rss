@@ -1,5 +1,5 @@
-import * as homeController from "@/controller/home";
 import * as feedController from "@/controller/feedController";
+import * as homeController from "@/controller/home";
 import * as tweetController from "@/controller/tweetController";
 
 import { Router } from "express";

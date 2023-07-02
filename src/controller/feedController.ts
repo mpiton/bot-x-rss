@@ -1,7 +1,7 @@
 import * as feedService from "@/service/feed";
-import { Request, Response } from "express";
 import { FeedDocument } from "@/types/feed/IFeed";
 import Logger from "@/utils/logger";
+import { Request, Response } from "express";
 
 /**
  * Get all Feeds.
@@ -10,9 +10,8 @@ import Logger from "@/utils/logger";
 export const getAll = async (): Promise<FeedDocument[] | void> => {
 	try {
 		await feedService.findFeeds();
-		return;
 	} catch (error) {
-		Logger.info(error.message);
+		Logger.info(JSON.stringify(error));
 	}
 };
 
@@ -32,6 +31,6 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 			Logger.info("Feed created");
 		}
 	} catch (error) {
-		Logger.error("Failed to create feed");
+		Logger.error("Failed to create feed : ", JSON.stringify(error));
 	}
 };
