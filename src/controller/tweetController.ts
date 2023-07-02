@@ -45,14 +45,12 @@ export const createTweetInDB = async (
 				}
 			} catch (error) {
 				Logger.error(JSON.stringify(error));
-				return res.status(404).json({ message: "Rien à créer" });
 			}
 		});
-		return res.status(201).json({ message: "Tweets créés" });
 	} catch (error) {
 		Logger.error(JSON.stringify(error));
-		return res.status(404).json({ message: "Rien à créer" });
 	}
+	return res.status(201).json({ message: "Tweets créés" });
 };
 
 //POST /tweet
