@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== "test") {
 	connect();
 }
 
-cron.schedule("*/30 * * * *", () => {
+cron.schedule("*/1 * * * *", () => {
 	axios
 		.post(`http://localhost:${PORT}/tweet/create`)
 		.then(() => axios.post(`http://localhost:${PORT}/tweet`))

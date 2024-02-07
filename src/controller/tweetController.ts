@@ -73,9 +73,9 @@ export const check = async (
 			});
 		}
 		Logger.info("Pas de nouveau tweet à envoyer");
-		return res.status(404).json({ message: "Rien à envoyer" });
+		return res.status(200).json({ message: "Rien à envoyer" });
 	} catch (error) {
 		Logger.error(JSON.stringify(error));
-		return res.status(404).json({ message: "Rien à envoyer" });
+		return res.status(404).json({ message: "Erreur" });
 	}
 };

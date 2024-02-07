@@ -72,7 +72,7 @@ export const sendTweet = async (tweet: TweetDocument) => {
   });
 
   try {
-    await client.v1.tweet(`${tweet.title} : ${tweet.link}`);
+    await client.v2.tweet(`${tweet.title} : ${tweet.link}`);
   } catch (error) {
     Logger.error(JSON.stringify(error));
   }
